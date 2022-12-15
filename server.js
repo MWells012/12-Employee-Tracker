@@ -7,10 +7,8 @@ const consoleTable = require ('console.table');
 const db = mysql.createConnection(
     {
       host: 'localhost',
-      // MySQL username,
       port: 3001,
       user: 'root',
-      // MySQL password
       password: 'KingKong22!',
       database: 'employee_db'
     });
@@ -19,19 +17,21 @@ const db = mysql.createConnection(
       if(err) {
           console.log("Unexpected Error in Connecting");
       } else {
-          console.log("Connection Successful. Welcome to the Employee Manager.");
+          console.log("Welcome to the Employee Manager.");
           console.log("Main Menu")
           promptUser();
       }
   });
-  
+
+
+  // Prompts for Terminal
   function promptUser(){
     
     inquirer.prompt([
         { 
             type: "list",
             name: "action",
-            message: "What would you like to do?",
+            message: "Please pick from the list below what you would like to do;",
             choices: [
                 "View all departments",
                 "View all roles",
@@ -139,7 +139,7 @@ function addDepartment(){
         {
             type: "input",
             name: "newDeptName",
-            message: "What is the name of the department you are adding?",
+            message: "What is the name of the department you would like to add?",
         }
     ]).then((answer) =>{
             db.query(`INSERT INTO department SET ?`, 
@@ -148,9 +148,9 @@ function addDepartment(){
             },
             (err, response) =>{
                 if (err){
-                    console.log("error adding department")
+                    console.log("hm somthing went wrong, we ran into an error adding the department")
                 }else{
-                    console.log("Department added");
+                    console.log("New department has been successfully added!");
                     viewDepartment();
                 }
             })
@@ -175,7 +175,7 @@ function addRole(){
             {
             type: 'rawlist',
             name: 'deptName',
-            message: 'Which department do you want to add the new role to?',
+            message: 'Which department do you want to add this new role to?',
             choices: departments
             },
         ]).then((answer) => {
@@ -187,7 +187,7 @@ function addRole(){
             },
             (err, response) => {
                 if (err){
-                    console.log("error adding role");
+                    console.log("hm somthing went wrong, we ran into an error adding the role");
                 }else{
                 console.log(`\n ${answer.title} successfully added to database! \n`);
                 viewRoles();
@@ -210,12 +210,12 @@ function addEmployee(){
                 {
                     type: "input",
                     name: "firstName",
-                    message: "Enter the employee's first name"
+                    message: "Please enter the employee's first name"
                 },
                 {
                     type: "input",
                     name: "lastName",
-                    message: "Enter the employee's last name"
+                    message: "Please enter the employee's last name"
                 },
                 {
                     type: "rawlist",
@@ -243,7 +243,7 @@ function addEmployee(){
                
                 (err,response) =>{
                     if(err){
-                        console.log("error")
+                        console.log("hm somthing went wrong, we ran into an error adding the employee")
                     }else{
                         console.log(`\n ${answer.firstName} ${answer.lastName} successfully added to database! \n`);
                         viewEmployees();
@@ -263,7 +263,7 @@ function deleteEmployee(){
             {
                 type: 'rawlist',
                 name: 'employeeDelete',
-                message: 'Select the employee you want to delete',
+                message: 'Please select an employee to delete from the database:',
                 choices: employees
             },
         ]).then((answer) =>{
@@ -276,9 +276,9 @@ function deleteEmployee(){
                 ],
                 (err, response) =>{
                     if (err){
-                        console.log("error deleting employee")
+                        console.log("hm somthing went wrong, we ran into an error deleting the employee")
                     }else{
-                        console.log(`employee deleted` );
+                        console.log(`The employee has been successfully deleted.` );
                         viewEmployees();
                     }
                 }   
@@ -307,9 +307,9 @@ function deleteDepartment(){
                 ],
                 (err, response) =>{
                     if(err){
-                        console.log("error deleting department")
+                        console.log("hm somthing went wrong, we ran into an error deleting the department")
                     }else{
-                        console.log("department deleted");
+                        console.log("The department has successfully been deleted.");
                         viewDepartment();
                     }
                 }
@@ -337,9 +337,9 @@ function deleteRole(){
             ],
                 (err, response) =>{
                     if(err){
-                        console.log("error deleting role");
+                        console.log("hm somthing went wrong, we ran into an error deletingn the role");
                     }else{
-                    console.log("role deleted");
+                    console.log("This role has been successfully deleted.");
                         viewRoles();
                     }
                 }
@@ -359,13 +359,13 @@ function updateRole(){
             {
                 type: "rawlist",
                 name: "chooseEmployee",
-                message: "Choose an employee to update",
+                message: "What employee would you like to update?",
                 choices: employees
             },
             {
                 type: "rawlist",
                 name: "chooseNewRole",
-                message: "Select as role",
+                message: "Select a role",
                 choices: role
             },
         ]).then((answer) => {
@@ -380,9 +380,9 @@ function updateRole(){
                 ],
                 (err, response) =>{
                     if(err){
-                        console.log("error updating role")
+                        console.log("hm somthing went wrong, we ran into an error trying to update the role")
                     }else{
-                        console.log("Role updated!");
+                        console.log("The role has been successfully updated!");
                         viewRoles();
                     }
                 })   
@@ -401,13 +401,13 @@ function updateManager(){
         {
             type: "rawlist",
             name: "employee",
-            message: "What employee would you like to edit?",
+            message: "Please pick the employee you would like to edit",
             choices: managers
         },
         {
             type: "rawlist",
             name: "manager",
-            message: "CHoose a new manager",
+            message: "Please pick a name to update to manager",
             choices: managers
         }
     ]).then((answer) =>{
@@ -425,9 +425,9 @@ function updateManager(){
             ],
             (err, response) =>{
                 if(err){
-                    console.log("error updating manager")
+                    console.log("hm somthing went wrong, we ran into an error trying to update the manager")
                 }else{
-                    console.log(`\n ${answer.employee} manager updated to ${answer.manager}...\n`)
+                    console.log(`Success! \n ${answer.employee} manager updated to ${answer.manager}...\n`)
                     viewEmployees();
                 }
             })  
