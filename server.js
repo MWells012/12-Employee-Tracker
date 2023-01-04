@@ -9,7 +9,7 @@ const db = mysql.createConnection(
       host: 'localhost',
       port: 3001,
       user: 'root',
-      password: 'KingKong22!',
+      password: '112233',
       database: 'employee_db'
     });
 
@@ -17,7 +17,7 @@ const db = mysql.createConnection(
       if(err) {
           console.log("Unexpected Error in Connecting");
       } else {
-          console.log("Welcome to the Employee Manager.");
+          console.log("Welcome to the Employee Manager application!");
           console.log("Main Menu")
           promptUser();
       }
@@ -31,7 +31,7 @@ const db = mysql.createConnection(
         { 
             type: "list",
             name: "action",
-            message: "Please pick from the list below what you would like to do;",
+            message: "Please pick from the list below what you would like to do today;",
             choices: [
                 "View all departments",
                 "View all roles",
@@ -139,7 +139,7 @@ function addDepartment(){
         {
             type: "input",
             name: "newDeptName",
-            message: "What is the name of the department you would like to add?",
+            message: "What is the name of the new department you would like to add?",
         }
     ]).then((answer) =>{
             db.query(`INSERT INTO department SET ?`, 
@@ -148,7 +148,7 @@ function addDepartment(){
             },
             (err, response) =>{
                 if (err){
-                    console.log("hm somthing went wrong, we ran into an error adding the department")
+                    console.log("hm we seem to have run into an error trying to process your request")
                 }else{
                     console.log("New department has been successfully added!");
                     viewDepartment();
@@ -165,7 +165,7 @@ function addRole(){
             {
             type: 'input',
             name: 'newRole',
-            message: 'What is the name of the role you want to add?'   
+            message: 'What is the name of the new role you want to add?'   
             },
             {
             type: 'input',
@@ -187,7 +187,7 @@ function addRole(){
             },
             (err, response) => {
                 if (err){
-                    console.log("hm somthing went wrong, we ran into an error adding the role");
+                    console.log("hm we seem to have run into an error trying to process your request");
                 }else{
                 console.log(`\n ${answer.title} successfully added to database! \n`);
                 viewRoles();
@@ -243,7 +243,7 @@ function addEmployee(){
                
                 (err,response) =>{
                     if(err){
-                        console.log("hm somthing went wrong, we ran into an error adding the employee")
+                        console.log("hm we seem to have run into an error trying to process your request")
                     }else{
                         console.log(`\n ${answer.firstName} ${answer.lastName} successfully added to database! \n`);
                         viewEmployees();
@@ -276,7 +276,7 @@ function deleteEmployee(){
                 ],
                 (err, response) =>{
                     if (err){
-                        console.log("hm somthing went wrong, we ran into an error deleting the employee")
+                        console.log("hm we seem to have run into an error trying to process your request")
                     }else{
                         console.log(`The employee has been successfully deleted.` );
                         viewEmployees();
@@ -307,7 +307,7 @@ function deleteDepartment(){
                 ],
                 (err, response) =>{
                     if(err){
-                        console.log("hm somthing went wrong, we ran into an error deleting the department")
+                        console.log("hm we seem to have run into an error trying to process your request")
                     }else{
                         console.log("The department has successfully been deleted.");
                         viewDepartment();
@@ -337,7 +337,7 @@ function deleteRole(){
             ],
                 (err, response) =>{
                     if(err){
-                        console.log("hm somthing went wrong, we ran into an error deletingn the role");
+                        console.log("hm we seem to have run into an error trying to process your request");
                     }else{
                     console.log("This role has been successfully deleted.");
                         viewRoles();
@@ -359,7 +359,7 @@ function updateRole(){
             {
                 type: "rawlist",
                 name: "chooseEmployee",
-                message: "What employee would you like to update?",
+                message: "Please select what employee you'd like to update",
                 choices: employees
             },
             {
@@ -380,7 +380,7 @@ function updateRole(){
                 ],
                 (err, response) =>{
                     if(err){
-                        console.log("hm somthing went wrong, we ran into an error trying to update the role")
+                        console.log("hm we seem to have run into an error trying to process your request")
                     }else{
                         console.log("The role has been successfully updated!");
                         viewRoles();
@@ -401,13 +401,13 @@ function updateManager(){
         {
             type: "rawlist",
             name: "employee",
-            message: "Please pick the employee you would like to edit",
+            message: "Who would you like to update?",
             choices: managers
         },
         {
             type: "rawlist",
             name: "manager",
-            message: "Please pick a name to update to manager",
+            message: "Who is the new manager?",
             choices: managers
         }
     ]).then((answer) =>{
@@ -425,7 +425,7 @@ function updateManager(){
             ],
             (err, response) =>{
                 if(err){
-                    console.log("hm somthing went wrong, we ran into an error trying to update the manager")
+                    console.log("hm we seem to have run into an error trying to process your request")
                 }else{
                     console.log(`Success! \n ${answer.employee} manager updated to ${answer.manager}...\n`)
                     viewEmployees();
@@ -437,5 +437,5 @@ function updateManager(){
 
 function exitApp(){
     db.end();
-    console.log("Goodbye")
+    console.log("Thanks for stopping by!")
 };
