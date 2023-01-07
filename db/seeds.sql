@@ -6,7 +6,9 @@ VALUES
 ("Accounting"),
 ("IT");
 
-INSERT INTO role (title, salary, department_id)
+INSERT INTO role 
+(title, salary, department_id)
+
 VALUES
 ("Junior Sales Advisor", 50000.00, 1),
 ("Junior Engineer", 60000.00, 2),
@@ -26,13 +28,15 @@ VALUES
 ("Accounting Manager", 105000.00, 4),
 ("IT Manager", 10000.00, 5);
 
-INSERT INTO employee (first_name , last_name , role_id, manager_id)
+INSERT INTO employee 
+(first_name , last_name , role_id, manager_id)
+
 VALUES
-("Kevin", "Square", 01, null),
-("Austin", "Circle", 02, 3),
-("Kathy", "Octogon", 03, null),
-("Amber", "Rectangle", 04, null),
-("James", "Oval", 03, 4),
-("Kelly", "Hexagon", 05, 2),
-("Jasper", "Triangle", 01, 1),
-("Angela", "Kite", 02, 5);
+("Kevin", "Square", 1, null),
+("Austin", "Circle", 2, 3),
+("Kathy", "Octogon", 3, null),
+("Amber", "Rectangle", 4, null),
+("James", "Oval", 3, 4),
+("Kelly", "Hexagon", 5, 2),
+("Jasper", "Triangle", 1, 1),
+("Angela", "Kite", 2, 5);

@@ -1,95 +1,146 @@
 const mysql = require ('mysql2');
 const inquirer = require ('inquirer');
 const consoleTable = require ('console.table');
+const { prompt } = require("inquirer")
+const db = require("./db")
 
 
 // Connect to database
-const db = mysql.createConnection(
+const connect = mysql.createConnection(
     {
-      host: 'localhost',
-      port: 3001,
-      user: 'root',
-      password: '112233',
-      database: 'employee_db'
+        host: 'localhost',
+        port: 3001,
+        user: 'root',
+        password: '112233',
+        database: 'employee_db'
     });
 
-  db.connect((err) => {
-      if(err) {
-          console.log("Unexpected Error in Connecting");
-      } else {
-          console.log("Welcome to the Employee Manager application!");
-          console.log("Main Menu")
-          promptUser();
-      }
-  });
+    connect.connect((err) => {
+        if(err) {
+            console.log("There was an Unexpected Error in Connecting");
+        } else {
+            console.log("Welcome to the Employee Manager application!");
+            console.log("Main Menu")
+            promptUser();
+        }
+});
 
 
   // Prompts for Terminal
-  function promptUser(){
+function promptUser(){
     
     inquirer.prompt([
         { 
             type: "list",
-            name: "action",
+            name: "choice",
             message: "Please pick from the list below what you would like to do today;",
             choices: [
-                "View all departments",
-                "View all roles",
-                "View all employees",
-                "Add a department",
-                "Add a role",
-                "Add an employee",
-                "Update an employee role",
-                "Update an employee manager",
-                "Delete an employee",
-                "Delete a department",
-                "Delete a role",
-                "Exit application"
+                {
+                    name: "View All Employees",
+                    value: "VIEW_EMPLOYEES"
+                },
+                {
+                    name: "View All Employees By Department",
+                    value: "VIEW_EMPLOYEES_BY_DEPARTMENT"
+                },
+                {
+                    name: "View All Employees By Manager",
+                    value: "VIEW_EMPLOYEES_BY_MANAGER"
+                },
+                {
+                    name: "Add Employee",
+                    value: "ADD_EMPLOYEE"
+                },
+                {
+                    name: "Delete Employee",
+                    value: "DELETE_EMPLOYEE"
+                },
+                {
+                    name: "Update Employee Role",
+                    value: "UPDATE_EMPLOYEE_ROLE"
+                },
+                {
+                    name: "Update Employee Manager",
+                    value: "UPDATE_EMPLOYEE_MANAGER"
+                },
+                {
+                    name: "View All Roles",
+                    value: "VIEW_ROLES"
+                },
+                {
+                    name: "Add Role",
+                    value: "ADD_ROLE"
+                },
+                {
+                    name: "Delete Role",
+                    value: "Delete_ROLE"
+                },
+                {
+                    name: "View All Departments",
+                    value: "VIEW_DEPARTMENTS"
+                },
+                {
+                    name: "Add Department",
+                    value: "ADD_DEPARTMENT"
+                },
+                {
+                    name: "Delete Department",
+                    value: "Delete_DEPARTMENT"
+                },
+                {
+                    name: "View Total Utilized Budget By Department",
+                    value: "VIEW_UTILIZED_BUDGET_BY_DEPARTMENT"
+                },
+                {
+                    name: "Quit",
+                    value: "QUIT"
+                }
             ]
+            }
+        ]).then(function(choice){
+            switch(choice.action){
+                case "View all departments":
+                    viewDepartment();
+                    break;
+                case "View all roles":
+                    viewRoles();
+                    break;
+                case "View all employees":
+                    viewEmployees();
+                    break;
+                case "Add a department":
+                    addDepartment();
+                    break;
+                case "Add a role":
+                    addRole();
+                    break;
+                case "Add an employee":
+                    addEmployee();
+                    break;
+                case "Update an employee role":
+                    updateRole();
+                    break;
+                case "Update an employee manager":
+                    updateManager();
+                    break;
+                case "Delete an employee":
+                    deleteEmployee();
+                    break;
+                case "Delete a department":
+                    deleteDepartment();
+                    break;
+                case "Delete a role":
+                    deleteRole();
+                    break;
+                case "Exit application":
+                    exitApp();
+            }
         }
-    ]).then(function(choice){
-        switch(choice.action){
-            case "View all departments":
-                viewDepartment();
-                break;
-            case "View all roles":
-                viewRoles();
-                break;
-            case "View all employees":
-                viewEmployees();
-                break;
-            case "Add a department":
-                addDepartment();
-                break;
-            case "Add a role":
-                addRole();
-                break;
-            case "Add an employee":
-                addEmployee();
-                break;
-            case "Update an employee role":
-                updateRole();
-                break;
-            case "Update an employee manager":
-                updateManager();
-                break;
-            case "Delete an employee":
-                deleteEmployee();
-                break;
-            case "Delete a department":
-                deleteDepartment();
-                break;
-            case "Delete a role":
-                deleteRole();
-                break;
-            case "Exit application":
-                exitApp();
-
+        )
         }
-    });
-};
+        
 
-function viewDepartment(){
+function viewDepartments(){
     let query = "SELECT * FROM department";
     db.query(query, function(err, results){
         if(err){
@@ -115,23 +166,15 @@ function viewRoles(){
 };
 
 function viewEmployees(){
-    let query = `
-    SELECT e.id, e.first_name, e.last_name, roles.title, department.name AS department, salary, IFNULL(concat(m.first_name, ' ', m.last_name), 'N/A') AS manager
-    FROM employee e
-    LEFT JOIN employee m
-    ON m.id = e.manager_id
-    JOIN roles
-    ON e.role_id = roles.id
-    JOIN department
-    ON roles.department_id = department.id;`
-    db.query(query, function(err,results){
+    db.findAllEmployees(query, function(err,results){
         if(err){
             console.log(err)
         }else{
             console.table(results)
             promptUser();
-        };
-    });
+        }
+    })
+    .then(() => promptUser());
 };
 
 function addDepartment(){
@@ -205,7 +248,7 @@ function addEmployee(){
             if (err) throw err;
             managers = results.map(employee => ({name:employee.first_name + " " + employee.last_name, value: employee.id}));
             managers.push({name:"None"});
-               
+            
             inquirer.prompt([
                 {
                     type: "input",
@@ -240,7 +283,7 @@ function addEmployee(){
                     role_id: answer.employeeRole,
                     manager_id: answer.employeeManager
                 },
-               
+            
                 (err,response) =>{
                     if(err){
                         console.log("hm we seem to have run into an error trying to process your request")
@@ -267,7 +310,7 @@ function deleteEmployee(){
                 choices: employees
             },
         ]).then((answer) =>{
-           
+        
             db.query(`DELETE FROM employee WHERE ?`,
                 [
                     {

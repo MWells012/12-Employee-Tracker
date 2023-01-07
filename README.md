@@ -9,20 +9,42 @@
 - [Mock-Up](#Mock-up)
 
 # Description
-
+This application is a Content Management System interface. This type of program/interface allow non-developer people to view and interact with information that has been stored in a database. This application is a command-line focused application that allows a company to manage their employee database.
 
 # User Story 
-+ AS A manager
-+ I WANT to generate a webpage that displays my team's basic info
-+ SO THAT I have quick access to their emails and GitHub profiles
++ AS A business owner
++ I WANT to be able to view and manage the departments, roles, and employees in my company
++ SO THAT I can organize and plan my business
 
 # Installation
-To install this application one must clone the code into your choice of application where you can create a respective repository to execute the code. Once cloned, the command npm init -y must be run to create a package where the project files will be stored, from here we must install inquirer. It is recommended that you install version 8.2.4 with the command npm i inquirer@8.2.4. From here you must open the index.js file in your terminal and run the code npm index.js to start the prompts in your terminal allowing you to answer the questions.
+To run this application follow these steps:
+
+    ```
+    1. clone the repository using https or SSH
+    2. run npm i
+    ```
+open mysql2 by using: mysql -u root -p
+
+    ```
+    1. enter your SQL password
+    2. input source db/schema.sql
+    3. use employee_db
+    ```
+Exit mysql by running "quit", then enter:
+
+    ```
+    1. npm run seed
+    2. make sure you have a .env file with the structure:
+    `- DB_name='employee_db'
+     - DB_USER='root'
+     - DB_PASSWORD='*this should be your personal sql password*'
+    3. npm start or node server.js
+    ```
 
 # Usage
-This application generates a team of employees based on their roles and your input/selections. Once all the prompts in the terminal have been answered, a card will be created with all of the employees information that was given via the questions in the terminal. These cards can be viewed on the index.html file that gets created once you've completed building your team.
+Once all the prompts have been answered in the terminal an index.html file will populate allowing you to have all the staffs information accessible from one spot.
 
 # Tests
-To test this application you will need to use Jest, to run the test in your terminal you will need to type `npm run test`.
+
 
 # Mock-Up
