@@ -17,14 +17,18 @@ This application is a Content Management System interface. This type of program/
 + SO THAT I can organize and plan my business
 
 # Installation
-To run this application follow these steps:
+* To run this application follow these steps:
 
     ```
     1. clone the repository using https or SSH
     2. run npm i
-    3. run `source db/schema.sql`
-    4. run source db/seeds.sql
-    5. enter node server.js in the terminal
+    3. open mysql2 by using: mysql -u root -p
+    ```
+* in mysql you need to run 
+    4. run `source db/schema.sql`
+    5. run `source db/seeds.sql`
+    ```
+    6. enter node server.js or npm start in the terminal in the root folder
     ```
 
 # Usage

@@ -1,7 +1,7 @@
-const mysql = require ('mysql2');
-const inquirer = require ('inquirer');
+const inquirer = require ("inquirer");
+const db = require("./db");
 
-require ('console.table');
+require ("console.table");
 
 
 // Prompts for Terminal
@@ -140,12 +140,12 @@ function viewEmployees(){
 function deleteEmployee(){
     db.query(`SELECT * FROM employee ORDER BY id ASC;`, (err,results) =>{
         if(err)throw err;
-        let employees = results.map(employee => ({name: employee.first_name + ' ' + employee.last_name, value: employee.id}));
+        let employees = results.map(employee => ({name: employee.first_name + " " + employee.last_name, value: employee.id}));
         inquirer.prompt([
             {
-                type: 'rawlist',
-                name: 'employeeDelete',
-                message: 'Please select an employee to delete from the database:',
+                type: "rawlist",
+                name: "employeeDelete",
+                message: "Please select an employee to delete from the database:",
                 choices: employees
             },
         ]).then((answer) =>{
@@ -175,12 +175,12 @@ function updateEmployeeRole(){
        let role = response.map(roles => ({name: roles.title, value: roles.id}));
        db.query(`SELECT * FROM employee;`, (err, response) =>{
            if(err) throw err;
-           let employees = response.map(employee => ({name: employee.first_name + ' ' + employee.last_name, value: employee.id}));
+           let employees = response.map(employee => ({name: employee.first_name + " " + employee.last_name, value: employee.id}));
            inquirer.prompt([
                {
                    type: "rawlist",
                    name: "chooseEmployee",
-                   message: "Please select what employee you'd like to update",
+                   message: "Please select what employee you"d like to update",
                    choices: employees
                },
                {
@@ -274,19 +274,19 @@ function addRole(){
         let departments = results.map(department => ({name: department.name, value: department.id }));
         inquirer.prompt([
             {
-            type: 'input',
-            name: 'newRole',
-            message: 'What is the name of the new role you want to add?'   
+            type: "input",
+            name: "newRole",
+            message: "What is the name of the new role you want to add?"   
             },
             {
-            type: 'input',
-            name: 'salaryAmount',
-            message: 'What is the salary of the role you want to add?'   
+            type: "input",
+            name: "salaryAmount",
+            message: "What is the salary of the role you want to add?"   
             },
             {
-            type: 'rawlist',
-            name: 'deptName',
-            message: 'Which department do you want to add this new role to?',
+            type: "rawlist",
+            name: "deptName",
+            message: "Which department do you want to add this new role to?",
             choices: departments
             },
         ]).then((answer) => {
@@ -418,23 +418,23 @@ function addEmployee(){
                 {
                     type: "input",
                     name: "firstName",
-                    message: "Please enter the employee's first name"
+                    message: "Please enter the employee"s first name"
                 },
                 {
                     type: "input",
                     name: "lastName",
-                    message: "Please enter the employee's last name"
+                    message: "Please enter the employee"s last name"
                 },
                 {
                     type: "rawlist",
                     name: "employeeRole",
-                    message: "What is the employee's role?",
+                    message: "What is the employee"s role?",
                     choices: role
                 },
                 {
-                    type: 'list',
-                    name: 'employeeManager',
-                    message: 'Who is the new employee\'s manager?',
+                    type: "list",
+                    name: "employeeManager",
+                    message: "Who is the new employee\"s manager?",
                     choices: managers
                 }
             ]).then((answer) => {
