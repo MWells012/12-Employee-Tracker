@@ -1,7 +1,7 @@
 const mysql = require ('mysql2');
 const inquirer = require ('inquirer');
+
 require ('console.table');
-const { prompt } = require("inquirer")
 
 
 // connection to database
@@ -25,13 +25,13 @@ const db = mysql.createConnection(
 });
 
 
-  // Prompts for Terminal
+// Prompts for Terminal
 function promptUser(){
     
-    prompt([
+    inquirer.prompt([
         { 
             type: "list",
-            name: "choice",
+            name: "action",
             message: "Please pick from the list below what you would like to do today;",
             choices: [
                 {
