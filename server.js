@@ -15,21 +15,21 @@ const connect = mysql.createConnection(
         database: 'employee_db'
     });
 
-    connect.connect((err) => {
-        if(err) {
-            console.log("There was an Unexpected Error in Connecting");
-        } else {
-            console.log("Welcome to the Employee Manager application!");
-            console.log("Main Menu")
-            promptUser();
-        }
+connect.connect((err) => {
+    if(err) {
+        console.log("There was an Unexpected Error in Connecting");
+    } else {
+        console.log("Welcome to the Employee Manager application!");
+        console.log("Main Menu")
+        promptUser();
+    }
 });
 
 
   // Prompts for Terminal
 function promptUser(){
     
-    inquirer.prompt([
+    prompt([
         { 
             type: "list",
             name: "choice",
@@ -100,7 +100,7 @@ function promptUser(){
         ]).then(function(choice){
             switch(choice.action){
                 case "View all departments":
-                    viewDepartment();
+                    viewDepartments();
                     break;
                 case "View all roles":
                     viewRoles();
@@ -118,10 +118,10 @@ function promptUser(){
                     addEmployee();
                     break;
                 case "Update an employee role":
-                    updateRole();
+                    updateEmployeeRole();
                     break;
                 case "Update an employee manager":
-                    updateManager();
+                    updateEmployeeManager();
                     break;
                 case "Delete an employee":
                     deleteEmployee();
@@ -138,33 +138,7 @@ function promptUser(){
         }
         )
         }
-        
-
-function viewDepartments(){
-    let query = "SELECT * FROM department";
-    db.query(query, function(err, results){
-        if(err){
-            console.log(err)
-        }else{
-            console.table(results)
-            promptUser();
-        };
-        
-    });
-};
-
-function viewRoles(){
-    let query = "SELECT * FROM roles";
-    db.query(query, function(err,results){
-        if(err){
-            console.log(err)
-        }else{
-            console.table(results)
-            promptUser();
-        };
-    });
-};
-
+    
 function viewEmployees(){
     db.findAllEmployees(query, function(err,results){
         if(err){
@@ -177,27 +151,143 @@ function viewEmployees(){
     .then(() => promptUser());
 };
 
-function addDepartment(){
-    inquirer.prompt([
-        {
-            type: "input",
-            name: "newDeptName",
-            message: "What is the name of the new department you would like to add?",
-        }
-    ]).then((answer) =>{
-            db.query(`INSERT INTO department SET ?`, 
+// function viewEmployeesByDepartment() {
+
+// };
+
+// function viewEmployeesByManager() {
+
+// };
+
+function deleteEmployee(){
+    db.query(`SELECT * FROM employee ORDER BY id ASC;`, (err,results) =>{
+        if(err)throw err;
+        let employees = results.map(employee => ({name: employee.first_name + ' ' + employee.last_name, value: employee.id}));
+        inquirer.prompt([
             {
-                name: answer.newDeptName,
+                type: 'rawlist',
+                name: 'employeeDelete',
+                message: 'Please select an employee to delete from the database:',
+                choices: employees
             },
-            (err, response) =>{
-                if (err){
-                    console.log("hm we seem to have run into an error trying to process your request")
-                }else{
-                    console.log("New department has been successfully added!");
-                    viewDepartment();
+        ]).then((answer) =>{
+        
+            db.query(`DELETE FROM employee WHERE ?`,
+                [
+                    {
+                    id: answer.employeeDelete,
                 }
-            })
-        });
+                ],
+                (err, response) =>{
+                    if (err){
+                        console.log("hm we seem to have run into an error trying to process your request")
+                    }else{
+                        console.log(`The employee has been successfully deleted.` );
+                        viewEmployees();
+                    }
+                }   
+            )
+        })
+    })
+};
+
+function updateEmployeeRole(){
+    db.query(`SELECT * FROM roles;`, (err,response) =>{
+       if(err) throw err;
+       let role = response.map(roles => ({name: roles.title, value: roles.id}));
+       db.query(`SELECT * FROM employee;`, (err, response) =>{
+           if(err) throw err;
+           let employees = response.map(employee => ({name: employee.first_name + ' ' + employee.last_name, value: employee.id}));
+           inquirer.prompt([
+               {
+                   type: "rawlist",
+                   name: "chooseEmployee",
+                   message: "Please select what employee you'd like to update",
+                   choices: employees
+               },
+               {
+                   type: "rawlist",
+                   name: "chooseNewRole",
+                   message: "Select a role",
+                   choices: role
+               },
+           ]).then((answer) => {
+                   db.query(`UPDATE employee SET ? WHERE ?`,
+                   [
+                       {
+                       role_id: answer.chooseNewRole,
+                       },
+                       {
+                           id: answer.chooseEmployee,
+                       },
+                   ],
+                   (err, response) =>{
+                       if(err){
+                           console.log("hm we seem to have run into an error trying to process your request")
+                       }else{
+                           console.log("The role has been successfully updated!");
+                           viewRoles();
+                       }
+                   })   
+               })
+           })
+       })
+};
+
+// function updateEmployeeManager(){
+//     db.query(`SELECT * FROM employee;`, (err, results) => {
+//         if (err) throw err;
+//         managers = results.map(employee => ({name:employee.first_name + " " + employee.last_name, value: employee.id}));
+//         managers.push({name:"None"});
+
+//     inquirer.prompt([
+//         {
+//             type: "rawlist",
+//             name: "employee",
+//             message: "Who would you like to update?",
+//             choices: managers
+//         },
+//         {
+//             type: "rawlist",
+//             name: "manager",
+//             message: "Who is the new manager?",
+//             choices: managers
+//         }
+//     ]).then((answer) =>{
+//             if(answer.manager === "None"){
+//                 answer.manager = null;
+//             }
+//             db.query(`UPDATE employee SET ? WHERE ?`,
+//             [
+//                 {
+//                     manager_id: answer.manager,
+//                 },
+//                 {
+//                     id: answer.employee,
+//                 }
+//             ],
+//             (err, response) =>{
+//                 if(err){
+//                     console.log("hm we seem to have run into an error trying to process your request")
+//                 }else{
+//                     console.log(`Success! \n ${answer.employee} manager updated to ${answer.manager}...\n`)
+//                     viewEmployees();
+//                 }
+//             })  
+//         })
+//     })
+// };
+
+function viewRoles(){
+    let query = "SELECT * FROM roles";
+    db.query(query, function(err,results){
+        if(err){
+            console.log(err)
+        }else{
+            console.table(results)
+            promptUser();
+        };
+    });
 };
 
 function addRole(){
@@ -238,6 +328,103 @@ function addRole(){
             });
         });
     });
+};
+
+function deleteRole(){
+    db.query(`SELECT * FROM roles ORDER BY id ASC`, (err, results) =>{
+        if(err) throw err;
+        let role = results.map(roles =>({name:roles.title, value: roles.id}));
+        inquirer.prompt([
+            {
+                type: "rawlist",
+                name: "deleteRole",
+                choices: role
+            },
+        ]).then((answer) => {
+            db.query(`DELETE FROM roles WHERE ?`,
+            [
+                {
+                    id: answer.deleteRole,
+                }
+            ],
+                (err, response) =>{
+                    if(err){
+                        console.log("hm we seem to have run into an error trying to process your request");
+                    }else{
+                    console.log("This role has been successfully deleted.");
+                        viewRoles();
+                    }
+                }
+            )
+        })
+    })
+};
+
+function viewDepartments(){
+    let query = "SELECT * FROM department";
+    db.query(query, function(err, results){
+        if(err){
+            console.log(err)
+        }else{
+            console.table(results)
+            promptUser();
+        };
+        
+    });
+};
+
+function addDepartment(){
+    inquirer.prompt([
+        {
+            type: "input",
+            name: "newDeptName",
+            message: "What is the name of the new department you would like to add?",
+        }
+    ]).then((answer) =>{
+            db.query(`INSERT INTO department SET ?`, 
+            {
+                name: answer.newDeptName,
+            },
+            (err, response) =>{
+                if (err){
+                    console.log("hm we seem to have run into an error trying to process your request")
+                }else{
+                    console.log("New department has been successfully added!");
+                    viewDepartment();
+                }
+            })
+        });
+};
+
+function deleteDepartment(){
+    db.query(`SELECT * FROM department ORDER BY id ASC;`, (err, results) =>{
+        if(err) throw err;
+        let departments = results.map(department => ({name: department.name, value: department.id }));
+        inquirer.prompt([
+            {
+                type: "rawlist",
+                name: "deleteDepartment",
+                choices: departments
+            },
+        ]).then((answer) =>{
+            
+            db.query(`DELETE FROM department WHERE ?`,
+                [
+                    {
+                        id: answer.deleteDepartment,
+                    }
+                ],
+                (err, response) =>{
+                    if(err){
+                        console.log("hm we seem to have run into an error trying to process your request")
+                    }else{
+                        console.log("The department has successfully been deleted.");
+                        viewDepartment();
+                    }
+                }
+            )
+        })
+    })
 };
 
 function addEmployee(){
@@ -296,186 +483,6 @@ function addEmployee(){
         })
     })
 
-};
-
-function deleteEmployee(){
-    db.query(`SELECT * FROM employee ORDER BY id ASC;`, (err,results) =>{
-        if(err)throw err;
-        let employees = results.map(employee => ({name: employee.first_name + ' ' + employee.last_name, value: employee.id}));
-        inquirer.prompt([
-            {
-                type: 'rawlist',
-                name: 'employeeDelete',
-                message: 'Please select an employee to delete from the database:',
-                choices: employees
-            },
-        ]).then((answer) =>{
-        
-            db.query(`DELETE FROM employee WHERE ?`,
-                [
-                    {
-                    id: answer.employeeDelete,
-                }
-                ],
-                (err, response) =>{
-                    if (err){
-                        console.log("hm we seem to have run into an error trying to process your request")
-                    }else{
-                        console.log(`The employee has been successfully deleted.` );
-                        viewEmployees();
-                    }
-                }   
-            )
-        })
-    })
-};
-
-function deleteDepartment(){
-    db.query(`SELECT * FROM department ORDER BY id ASC;`, (err, results) =>{
-        if(err) throw err;
-        let departments = results.map(department => ({name: department.name, value: department.id }));
-        inquirer.prompt([
-            {
-                type: "rawlist",
-                name: "deleteDepartment",
-                choices: departments
-            },
-        ]).then((answer) =>{
-            
-            db.query(`DELETE FROM department WHERE ?`,
-                [
-                    {
-                        id: answer.deleteDepartment,
-                    }
-                ],
-                (err, response) =>{
-                    if(err){
-                        console.log("hm we seem to have run into an error trying to process your request")
-                    }else{
-                        console.log("The department has successfully been deleted.");
-                        viewDepartment();
-                    }
-                }
-            )
-        })
-    })
-};
-
-function deleteRole(){
-    db.query(`SELECT * FROM roles ORDER BY id ASC`, (err, results) =>{
-        if(err) throw err;
-        let role = results.map(roles =>({name:roles.title, value: roles.id}));
-        inquirer.prompt([
-            {
-                type: "rawlist",
-                name: "deleteRole",
-                choices: role
-            },
-        ]).then((answer) => {
-            db.query(`DELETE FROM roles WHERE ?`,
-            [
-                {
-                    id: answer.deleteRole,
-                }
-            ],
-                (err, response) =>{
-                    if(err){
-                        console.log("hm we seem to have run into an error trying to process your request");
-                    }else{
-                    console.log("This role has been successfully deleted.");
-                        viewRoles();
-                    }
-                }
-            )
-        })
-    })
-};
-
-function updateRole(){
- db.query(`SELECT * FROM roles;`, (err,response) =>{
-    if(err) throw err;
-    let role = response.map(roles => ({name: roles.title, value: roles.id}));
-    db.query(`SELECT * FROM employee;`, (err, response) =>{
-        if(err) throw err;
-        let employees = response.map(employee => ({name: employee.first_name + ' ' + employee.last_name, value: employee.id}));
-        inquirer.prompt([
-            {
-                type: "rawlist",
-                name: "chooseEmployee",
-                message: "Please select what employee you'd like to update",
-                choices: employees
-            },
-            {
-                type: "rawlist",
-                name: "chooseNewRole",
-                message: "Select a role",
-                choices: role
-            },
-        ]).then((answer) => {
-                db.query(`UPDATE employee SET ? WHERE ?`,
-                [
-                    {
-                    role_id: answer.chooseNewRole,
-                    },
-                    {
-                        id: answer.chooseEmployee,
-                    },
-                ],
-                (err, response) =>{
-                    if(err){
-                        console.log("hm we seem to have run into an error trying to process your request")
-                    }else{
-                        console.log("The role has been successfully updated!");
-                        viewRoles();
-                    }
-                })   
-            })
-        })
-    })
-};
-
-function updateManager(){
-    db.query(`SELECT * FROM employee;`, (err, results) => {
-        if (err) throw err;
-        managers = results.map(employee => ({name:employee.first_name + " " + employee.last_name, value: employee.id}));
-        managers.push({name:"None"});
-
-    inquirer.prompt([
-        {
-            type: "rawlist",
-            name: "employee",
-            message: "Who would you like to update?",
-            choices: managers
-        },
-        {
-            type: "rawlist",
-            name: "manager",
-            message: "Who is the new manager?",
-            choices: managers
-        }
-    ]).then((answer) =>{
-            if(answer.manager === "None"){
-                answer.manager = null;
-            }
-            db.query(`UPDATE employee SET ? WHERE ?`,
-            [
-                {
-                    manager_id: answer.manager,
-                },
-                {
-                    id: answer.employee,
-                }
-            ],
-            (err, response) =>{
-                if(err){
-                    console.log("hm we seem to have run into an error trying to process your request")
-                }else{
-                    console.log(`Success! \n ${answer.employee} manager updated to ${answer.manager}...\n`)
-                    viewEmployees();
-                }
-            })  
-        })
-    })
 };
 
 function exitApp(){
