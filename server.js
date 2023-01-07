@@ -1,23 +1,22 @@
 const mysql = require ('mysql2');
 const inquirer = require ('inquirer');
-const consoleTable = require ('console.table');
+require ('console.table');
 const { prompt } = require("inquirer")
-const db = require("./db")
 
 
-// Connect to database
-const connect = mysql.createConnection(
+// connection to database
+const db = mysql.createConnection(
     {
         host: 'localhost',
         port: 3001,
         user: 'root',
         password: '112233',
         database: 'employee_db'
-    });
-
-connect.connect((err) => {
+    }
+    );
+    db.connect((err) => {
     if(err) {
-        console.log("There was an Unexpected Error in Connecting");
+        console.log("There was an Unexpected Error in connecting");
     } else {
         console.log("Welcome to the Employee Manager application!");
         console.log("Main Menu")
@@ -92,8 +91,8 @@ function promptUser(){
                     value: "VIEW_UTILIZED_BUDGET_BY_DEPARTMENT"
                 },
                 {
-                    name: "Quit",
-                    value: "QUIT"
+                    name: "Exit",
+                    value: "Exit"
                 }
             ]
             }

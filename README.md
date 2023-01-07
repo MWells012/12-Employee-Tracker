@@ -32,17 +32,11 @@ open mysql2 by using: mysql -u root -p
     ```
 Exit mysql by running "quit", then enter:
 
-    ```
-    1. npm run seed
-    2. make sure you have a .env file with the structure:
-    `- DB_name='employee_db'
-     - DB_USER='root'
-     - DB_PASSWORD='*this should be your personal sql password*'
-    3. npm start or node server.js
+    1. enter node server.js in the terminal
     ```
 
 # Usage
-Once all the prompts have been answered in the terminal an index.html file will populate allowing you to have all the staffs information accessible from one spot.
+
 
 # Tests
 
