@@ -16,9 +16,9 @@ const db = mysql.createConnection(
     );
     db.connect((err) => {
     if(err) {
-        console.log("There was an Unexpected Error in connecting");
+        console.log("There was an unexpected error in connecting");
     } else {
-        console.log("Welcome to the Employee Manager application!");
+        console.log("Welcome to the Employee Manager Application!");
         console.log("Main Menu")
         promptUser();
     }
