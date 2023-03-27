@@ -1,22 +1,4 @@
-const mysql = require("mysql2");
-
-const connection = mysql.createConnection({
-    host: "localhost",
-    port: 3001,
-    user: "root",
-    password: "112233",
-    database: "employee_db"
-});
-
-connection.connect(function (err) {
-    if (err) {
-        console.log("There was an unexpected error in connecting");
-    } else {
-        console.log("Welcome to the Employee Manager Application!");
-        console.log("Main Menu")
-        promptUser();
-    }
-});
+const connection = require("./connection");
 
 class DB {
     // Keeping a reference to the connection on the class in case we need it later
@@ -24,14 +6,12 @@ class DB {
         this.connection = connection;
     }
 
-    // Find all employees, join with roles and departments to display their roles, salaries, departments, and managers
     findAllEmployees() {
         return this.connection.promise().query(
         "SELECT employee.id, employee.first_name, employee.last_name, role.title, department.name AS department, role.salary, CONCAT(manager.first_name, ' ', manager.last_name) AS manager FROM employee LEFT JOIN role on employee.role_id = role.id LEFT JOIN department on role.department_id = department.id LEFT JOIN employee manager on manager.id = employee.manager_id;"
         );
     }
 
-    // Find all employees except the given employee id
     findAllPossibleManagers(employeeId) {
         return this.connection.promise().query(
         "SELECT id, first_name, last_name FROM employee WHERE id != ?",

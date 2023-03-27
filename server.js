@@ -1,8 +1,10 @@
 const inquirer = require ("inquirer");
+const {prompt} = require("inquirer");
 const db = require("./db");
 
-require ("console.table");
+require("console.table");
 
+promptUser();
 
 // Prompts for Terminal
 function promptUser(){
@@ -51,7 +53,7 @@ function promptUser(){
                 },
                 {
                     name: "Delete Role",
-                    value: "Delete_ROLE"
+                    value: "DELETE_ROLE"
                 },
                 {
                     name: "View All Departments",
@@ -63,7 +65,7 @@ function promptUser(){
                 },
                 {
                     name: "Delete Department",
-                    value: "Delete_DEPARTMENT"
+                    value: "DELETE_DEPARTMENT"
                 },
                 {
                     name: "View Total Utilized Budget By Department",
@@ -71,51 +73,51 @@ function promptUser(){
                 },
                 {
                     name: "Exit",
-                    value: "Exit"
+                    value: "EXIT"
                 }
             ]
             }
         ]).then(function(choice){
             switch(choice.action){
-                case "View all departments":
+                case "VIEW_DEPARTMENTS":
                     viewDepartments();
                     break;
-                case "View all roles":
+                case "VIEW_ROLES":
                     viewRoles();
                     break;
-                case "View all employees":
+                case "VIEW_EMPLOYEES":
                     viewEmployees();
                     break;
-                case "Add a department":
+                case "ADD_DEPARTMENT":
                     addDepartment();
                     break;
-                case "Add a role":
+                case "ADD_ROLE":
                     addRole();
                     break;
-                case "Add an employee":
+                case "ADD_EMPLOYEE":
                     addEmployee();
                     break;
-                case "Update an employee role":
+                case "UPDATE_EMPLOYEE_ROLE":
                     updateEmployeeRole();
                     break;
-                case "Update an employee manager":
+                case "UPDATE_EMPLOYEE_MANAGER":
                     updateEmployeeManager();
                     break;
-                case "Delete an employee":
+                case "DELETE_EMPLOYEE":
                     deleteEmployee();
                     break;
-                case "Delete a department":
+                case "DELETE_DEPARTMENT":
                     deleteDepartment();
                     break;
-                case "Delete a role":
+                case "DELETE_ROLE":
                     deleteRole();
                     break;
-                case "Exit application":
+                case "EXIT":
                     exitApp();
             }
         }
         )
-        }
+    }
     
 function viewEmployees(){
     db.findAllEmployees(query, function(err,results){
@@ -129,13 +131,6 @@ function viewEmployees(){
     .then(() => promptUser());
 };
 
-// function viewEmployeesByDepartment() {
-
-// };
-
-// function viewEmployeesByManager() {
-
-// };
 
 function deleteEmployee(){
     db.query(`SELECT * FROM employee ORDER BY id ASC;`, (err,results) =>{

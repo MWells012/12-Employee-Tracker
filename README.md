@@ -28,7 +28,8 @@ This application is a Content Management System interface. This type of program/
     4. run `source db/schema.sql`
     5. run `source db/seeds.sql`
     ```
-    6. enter node server.js or npm start in the terminal in the root folder
+    6. quit mySQL
+    7. enter `node server.js` or `npm start` in the terminal in the root folder
     ```
 
 # Usage
