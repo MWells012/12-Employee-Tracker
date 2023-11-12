@@ -21,15 +21,16 @@ This application is a Content Management System interface. This type of program/
 
     ```
     1. clone the repository using https or SSH
-    2. run npm i
-    3. open mysql2 by using: mysql -u root -p
+    2. open the connection.js file and update connection properties
+    3. run npm i
+    4. open mysql2 by using: mysql -u root -p
     ```
 * in mysql you need to run 
-    4. run `source db/schema.sql`
-    5. run `source db/seeds.sql`
+    5. run `source db/schema.sql`
+    6. run `source db/seeds.sql`
     ```
-    6. quit mySQL
-    7. enter `node server.js` or `npm start` in the terminal in the root folder
+    7. quit mySQL
+    8. enter `node server.js` or `npm start` in the terminal in the root folder
     ```
 
 # Usage

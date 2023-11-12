@@ -1,10 +1,17 @@
 const inquirer = require ("inquirer");
-const {prompt} = require("inquirer");
-const db = require("./db");
-
+const db = require("./db/connection")
 require("console.table");
 
-promptUser();
+
+const mysql = require("mysql2");
+
+init();
+
+function init() {
+    promptUser();
+}
+
+
 
 // Prompts for Terminal
 function promptUser(){
@@ -13,7 +20,7 @@ function promptUser(){
         { 
             type: "list",
             name: "action",
-            message: "Please pick from the list below what you would like to do today;",
+            message: "Please pick from the list below what you would like to do;",
             choices: [
                 {
                     name: "View All Employees",
@@ -120,15 +127,23 @@ function promptUser(){
     }
     
 function viewEmployees(){
-    db.findAllEmployees(query, function(err,results){
+    let query = `
+    SELECT employee.id, employee.first_name, employee.last_name, role.title, department.name AS department, role.salary, CONCAT(manager.first_name, ' ', manager.last_name) AS manager 
+    FROM employee 
+    LEFT JOIN role 
+    ON employee.role_id = role.id 
+    LEFT JOIN department 
+    ON role.department_id = department.id 
+    LEFT JOIN employee manager 
+    ON manager.id = employee.manager_id;`
+    db.query(query, function(err, results) {
         if(err){
             console.log(err)
-        }else{
+        } else {
             console.table(results)
             promptUser();
-        }
-    })
-    .then(() => promptUser());
+        };
+    });
 };
 
 
@@ -311,6 +326,7 @@ function deleteRole(){
             {
                 type: "rawlist",
                 name: "deleteRole",
+                message: "who needs to be deleted?",
                 choices: role
             },
         ]).then((answer) => {
@@ -392,7 +408,7 @@ function deleteDepartment(){
                         console.log("hm we seem to have run into an error trying to process your request")
                     }else{
                         console.log("The department has successfully been deleted.");
-                        viewDepartment();
+                        deleteDepartment();
                     }
                 }
             )
@@ -459,6 +475,6 @@ function addEmployee(){
 };
 
 function exitApp(){
+    console.log("Thanks for stopping by!");
     db.end();
-    console.log("Thanks for stopping by!")
 };

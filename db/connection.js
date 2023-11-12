@@ -1,6 +1,6 @@
 const mysql = require("mysql2");
 
-const connection = mysql.createConnection({
+const db = mysql.createConnection({
     host: "localhost",
     port: 3001,
     user: "root",
@@ -8,9 +8,9 @@ const connection = mysql.createConnection({
     database: "employee_db"
 });
 
-connection.connect(function (err) {
+db.connect(function (err) {
     if (err) {
-        console.log("There was an unexpected error in connecting");
+        console.log("Something went wrong while trying to connect. Please try again.");
     } else {
         console.log("Welcome to the Employee Manager Application!");
         console.log("Main Menu")
@@ -18,4 +18,4 @@ connection.connect(function (err) {
     }
 });
 
-module.exports = connection;
+module.exports = db;
