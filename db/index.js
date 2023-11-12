@@ -26,20 +26,21 @@ class db {
 
     // Remove an employee with the given id
 
-    // removeEmployee(employeeId) {
-    //     return this.connection.promise().query(
-    //     "DELETE FROM employee WHERE id = ?",
-    //     employeeId
-    //     );
-    // }
+    removeEmployee(employeeId) {
+        return this.connection.promise().query(
+        "DELETE FROM employee WHERE id = ?",
+        employeeId
+        );
+    }
 
-    // // Update the given employee's role
-    // updateEmployeeRole(employeeId, roleId) {
-    //     return this.connection.promise().query(
-    //     "UPDATE employee SET role_id = ? WHERE id = ?",
-    //     [roleId, employeeId]
-    //     );
-    // }
+    // Update the given employee's role
+   
+    updateEmployeeRole(employeeId, roleId) {
+        return this.connection.promise().query(
+        "UPDATE employee SET role_id = ? WHERE id = ?",
+        [roleId, employeeId]
+        );
+    }
 
     // Update the given employee's manager
     updateEmployeeManager(employeeId, managerId) {
@@ -63,9 +64,9 @@ class db {
 
     // Remove a role from the db
 
-    // removeRole(roleId) {
-    //     return this.connection.promise().query("DELETE FROM role WHERE id = ?", roleId);
-    // }
+    removeRole(roleId) {
+        return this.connection.promise().query("DELETE FROM role WHERE id = ?", roleId);
+    }
 
     // Find all departments
     findAllDepartments() {
@@ -87,30 +88,31 @@ class db {
     }
 
     // Remove a department
-    // removeDepartment(departmentId) {
-    //     return this.connection.promise().query(
-    //     "DELETE FROM department WHERE id = ?",
-    //     departmentId
-    //     );
-    // }
+    
+    removeDepartment(departmentId) {
+        return this.connection.promise().query(
+        "DELETE FROM department WHERE id = ?",
+        departmentId
+        );
+    }
 
     // Find all employees in a given department, join with roles to display role titles
 
-    // findAllEmployeesByDepartment(departmentId) {
-    //     return this.connection.promise().query(
-    //     "SELECT employee.id, employee.first_name, employee.last_name, role.title FROM employee LEFT JOIN role on employee.role_id = role.id LEFT JOIN department department on role.department_id = department.id WHERE department.id = ?;",
-    //     departmentId
-    //     );
-    // }
+    findAllEmployeesByDepartment(departmentId) {
+        return this.connection.promise().query(
+        "SELECT employee.id, employee.first_name, employee.last_name, role.title FROM employee LEFT JOIN role on employee.role_id = role.id LEFT JOIN department department on role.department_id = department.id WHERE department.id = ?;",
+        departmentId
+        );
+    }
 
     // Find all employees by manager, join with departments and roles to display titles and department names
 
-    // findAllEmployeesByManager(managerId) {
-    //     return this.connection.promise().query(
-    //     "SELECT employee.id, employee.first_name, employee.last_name, department.name AS department, role.title FROM employee LEFT JOIN role on role.id = employee.role_id LEFT JOIN department ON department.id = role.department_id WHERE manager_id = ?;",
-    //     managerId
-    //     );
-    // }
+    findAllEmployeesByManager(managerId) {
+        return this.connection.promise().query(
+        "SELECT employee.id, employee.first_name, employee.last_name, department.name AS department, role.title FROM employee LEFT JOIN role on role.id = employee.role_id LEFT JOIN department ON department.id = role.department_id WHERE manager_id = ?;",
+        managerId
+        );
+    }
 }
 
 module.exports = new db(connection);
